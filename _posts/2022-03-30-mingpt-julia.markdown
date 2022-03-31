@@ -5,7 +5,7 @@ date:   2022-03-30 11:58:45 +0300
 categories: julia flux machine-learning
 ---
 
-As a learning exercise I tried to port Anrey Karpathy's [minGPT](https://github.com/karpathy/minGPT), which is based on Python and PyTorch to Julia and Flux. He exercises the code on three distinct domains; language, vision and math. Here I concentrate on the [math problem](https://github.com/karpathy/minGPT/blob/master/play_math.ipynb) in which we are interested in seeing whether the model can learn to do addition given two numbers. So we create a dataset where the input to the model is a pair of two digit numbers along with the two digits of the output. For example, the addition of 85 and 50 which results in 135 is encoded as the sequence [8, 5, 5, 0, 1, 3]. The model should predict the next digit, ie. 5, and this is encoded as [-100, -100, -100, 1, 3, 5]. The -100 is used to mask the loss to 0, because we want to train on the output locations only. A dataset created as such is split to train and test datasets and the train dataset is used to train the model.
+As a learning exercise I tried to port Anrey Karpathy's [minGPT](https://github.com/karpathy/minGPT), which is based on Python and PyTorch to Julia and Flux. He exercises the code on three distinct domains; language, vision and math. Here I concentrate on the [math problem](https://github.com/karpathy/minGPT/blob/master/play_math.ipynb), in which we are interested in seeing whether the model can learn to do addition given two numbers. So we create a dataset where the input to the model is a pair of two digit numbers along with the two digits of the output. For example, the addition of 85 and 50 which results in 135 is encoded as the sequence [8, 5, 5, 0, 1, 3]. The model should predict the next digit, ie. 5, and this is encoded as [-100, -100, -100, 1, 3, 5]. The -100 is used to mask the loss to 0, because we want to train on the output locations only. A dataset created as such is split to train and test datasets and the train dataset is used to train the model.
 
 It was very straightforward to port all of the components. For example below on the left you see the Python class definition for the `CausalSelfAttention` component, and on the right is the struct definition for Julia.
 
@@ -83,8 +83,6 @@ An interesting bit in Karpathy's code is how he had to select the parameters of 
       data-src="https://raw.githubusercontent.com/karpathy/minGPT/master/mingpt/model.py"
       data-view="https://github.com/karpathy/minGPT/blob/master/mingpt/model.py#L136-L180"></pre>          
 
-<div style="clear: both;">
-</div>
 
 In Flux one can implement the `trainable` function for this, as described in the [docs](https://fluxml.ai/Flux.jl/stable/models/advanced/#Customising-Parameter-Collection-for-a-Model). Getting inspiration from that, I added a `decayed_trainable`. So how I specify the parameters looks like this:
 
@@ -92,8 +90,6 @@ In Flux one can implement the `trainable` function for this, as described in the
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L80-L91"></pre>          
 
-<div style="clear: both;">
-</div>
 
 Flux docs mention the weight decayed version of ADAM, the `ADAMW`. But as far as I understand, this is not quite what Karpathy and Pytorch's ADAMW works here, so I grabbed the code of basic ADAM and added the bag of tricks used in deep learning, like norm clipping the gradients and decoupled weight decay of selected parameters. To be precise I tried to implement the algorithm in the [paper](https://arxiv.org/pdf/1711.05101.pdf).
 ![ADAMW](/assets/static/adamw.png)
@@ -104,8 +100,6 @@ So our optimiser looks like this:
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L255-L295"></pre>          
 
-<div style="clear: both;">
-</div>
 
 For training, we need a loss function and its gradient computed on batches of data. So we get the ouput from the model apply our cross entropy / softmax loss function via the `Zygote.pullback` and hit to the optimiser with its output via `Flux.Optimise.update!` as shown:
 
