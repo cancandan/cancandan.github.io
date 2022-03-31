@@ -105,7 +105,7 @@ Flux docs mention the weight decayed version of ADAM, the `ADAMW`. But as far as
 
 ![ADAMW](/assets/static/adamw.png)
 
-So our optimiser looks like this:
+Hence our optimiser looks like this:
 
 <pre data-start="255" data-end="295" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
