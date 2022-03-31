@@ -130,3 +130,69 @@ It turns out that what made my code run extremely slowly was NOT casting the out
 <pre data-start="56" data-end="60" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L56-L60"></pre>          
+
+
+One can run this as I did in [this notebook](https://github.com/cancandan/mingpt-julia/blob/main/run.ipynb) copied below:
+
+```julia
+include("minGPT.jl")
+
+using Random
+Random.seed!(123)
+
+ndigit=2
+
+(trnx,trny),(tstx,tsty)=makeData(ndigit)    
+
+map(addOneForJulia, [trnx, trny, tstx, tsty])
+
+config = Dict("vocab_size"=>10, "n_embed"=>128, "attn_pdrop"=>0.1f0, "resid_pdrop"=>0.1f0, "embd_pdrop"=>0.1f0, "block_size"=>6, "n_layer"=>2, "n_head"=>4,
+"max_epochs"=>110, "batch_size"=>512, "learning_rate"=>6f-4, "lr_decay"=>true, "warmup_tokens"=>1024, "final_tokens"=>50*size(trnx)[2]*(ndigit+1), "betas"=>(0.9f0, 0.95f0));
+
+model = mytraining(trnx, trny, tstx, tsty, config)
+```
+
+    Epoch: 1 Iter: 1 Train Loss: 2.95 lr_mult: 1.00 tokens: 1536
+    Epoch: 1 Iter: 11 Train Loss: 2.07 lr_mult: 1.00 tokens: 16896
+    Test Loss: 1.90209
+    Epoch: 2 Iter: 1 Train Loss: 1.98 lr_mult: 1.00 tokens: 25536
+    Epoch: 2 Iter: 11 Train Loss: 1.91 lr_mult: 1.00 tokens: 40896
+    Test Loss: 1.7956433
+    Epoch: 3 Iter: 1 Train Loss: 1.86 lr_mult: 1.00 tokens: 49536
+    Epoch: 3 Iter: 11 Train Loss: 1.78 lr_mult: 0.99 tokens: 64896
+    Test Loss: 1.7278897
+    Epoch: 4 Iter: 1 Train Loss: 1.76 lr_mult: 0.99 tokens: 73536
+    Epoch: 4 Iter: 11 Train Loss: 1.73 lr_mult: 0.99 tokens: 88896
+    Test Loss: 1.6655266
+    Epoch: 5 Iter: 1 Train Loss: 1.69 lr_mult: 0.98 tokens: 97536
+    Epoch: 5 Iter: 11 Train Loss: 1.69 lr_mult: 0.98 tokens: 112896
+    Test Loss: 1.6301216
+    Epoch: 6 Iter: 1 Train Loss: 1.63 lr_mult: 0.98 tokens: 121536
+    Epoch: 6 Iter: 11 Train Loss: 1.63 lr_mult: 0.97 tokens: 136896
+    Test Loss: 1.5736698
+    ...    
+    Epoch: 109 Iter: 1 Train Loss: 0.01 lr_mult: 0.94 tokens: 2593536
+    Epoch: 109 Iter: 11 Train Loss: 0.00 lr_mult: 0.93 tokens: 2608896
+    Test Loss: 0.00010189927
+    Epoch: 110 Iter: 1 Train Loss: 0.01 lr_mult: 0.92 tokens: 2617536
+    Epoch: 110 Iter: 11 Train Loss: 0.01 lr_mult: 0.91 tokens: 2632896
+    Test Loss: 0.0002310586
+
+
+
+
+
+```julia
+give_exam(model, trnx, trny, config)
+```
+
+    tot: 8000 tot_correct: 7999
+    
+
+
+```julia
+give_exam(model, tstx, tsty, config)
+```
+
+    tot: 2000 tot_correct: 2000
+
