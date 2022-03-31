@@ -112,7 +112,7 @@ Hence our optimiser looks like this:
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L255-L295"></pre>          
 
 
-For training, we need a loss function and its gradient computed on batches of data. So we get the ouput from the model apply our cross entropy / softmax loss function via the `Zygote.pullback` and hit to the optimiser with its output via `Flux.Optimise.update!` as shown:
+For training, we need a loss function and its gradient, computed on batches of data. So we get the ouput from the model, apply our cross entropy / softmax loss function via the `Zygote.pullback`, and hit to the optimiser with its output via `Flux.Optimise.update!` as shown:
 
 <pre data-start="297" data-end="301" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
