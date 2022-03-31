@@ -142,7 +142,7 @@ It turns out that what made my code run extremely slowly was NOT casting the out
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L56-L60"></pre>          
 
 
-One can run this as I did in [this notebook](https://github.com/cancandan/mingpt-julia/blob/main/run.ipynb), which I copy below for reference:
+If you want to try this out yourself, [this notebook](https://github.com/cancandan/mingpt-julia/blob/main/run.ipynb) what needs to be done, which I copy below for reference:
 
 ```julia
 include("minGPT.jl")
