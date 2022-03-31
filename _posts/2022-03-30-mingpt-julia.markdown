@@ -142,7 +142,7 @@ It turns out that what made my code run extremely slowly was NOT casting the out
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L56-L60"></pre>          
 
 
-One can run this as I did in [this notebook](https://github.com/cancandan/mingpt-julia/blob/main/run.ipynb) copied below:
+One can run this as I did in [this notebook](https://github.com/cancandan/mingpt-julia/blob/main/run.ipynb), which I copy below for reference:
 
 ```julia
 include("minGPT.jl")
@@ -172,14 +172,7 @@ model = mytraining(trnx, trny, tstx, tsty, config)
     Epoch: 3 Iter: 11 Train Loss: 1.78 lr_mult: 0.99 tokens: 64896
     Test Loss: 1.7278897
     Epoch: 4 Iter: 1 Train Loss: 1.76 lr_mult: 0.99 tokens: 73536
-    Epoch: 4 Iter: 11 Train Loss: 1.73 lr_mult: 0.99 tokens: 88896
-    Test Loss: 1.6655266
-    Epoch: 5 Iter: 1 Train Loss: 1.69 lr_mult: 0.98 tokens: 97536
-    Epoch: 5 Iter: 11 Train Loss: 1.69 lr_mult: 0.98 tokens: 112896
-    Test Loss: 1.6301216
-    Epoch: 6 Iter: 1 Train Loss: 1.63 lr_mult: 0.98 tokens: 121536
-    Epoch: 6 Iter: 11 Train Loss: 1.63 lr_mult: 0.97 tokens: 136896
-    Test Loss: 1.5736698
+    Epoch: 4 Iter: 11 Train Loss: 1.73 lr_mult: 0.99 tokens: 88896    
     ...    
     Epoch: 109 Iter: 1 Train Loss: 0.01 lr_mult: 0.94 tokens: 2593536
     Epoch: 109 Iter: 11 Train Loss: 0.00 lr_mult: 0.93 tokens: 2608896
