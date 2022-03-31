@@ -10,10 +10,12 @@
     <main class="page-content" aria-label="Content">
       <div class="wrapper">
         {{ content }}
-      </div>
+        <div class="giscus"></div>
+      </div>      
     </main>
 
     {%- include footer.html -%}
+    
 
     <script defer src="/assets/static/highlight.min.js" onload="hljs.initHighlightingOnLoad();"></script>
     <script defer src="/assets/static/page.js"></script>
