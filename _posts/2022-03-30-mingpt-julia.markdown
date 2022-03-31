@@ -56,7 +56,7 @@ img {
 <div style="clear: both;">
 </div>
 
-The meat of this component follows next. One thing that tripped me here is the application of the mask. As you can see, on the left, the `att` variable is modified in-place by using the `masked_fill` function of Pytorch. Doing the same thing with Flux lead to an error saying `Mutating arrays is not supported`. I guess this is not possible in the current AD component of Flux, ie. Zygote. To work around that I added the upper triangular mask to the output `att` of the batch matrix multiplication operation, which I do using Flux functions `batched_mul` and `batched_transpose`. Note that here Flux requires the batch dimesion to be the last, as evidenced by the difference in the order of `B, T, C`. 
+The meat of this component follows next. One thing that tripped me here is the application of the mask. As you can see, on the left below, the `att` variable is modified in-place by using the `masked_fill` function of Pytorch. Doing the same thing with Flux lead to an error saying `Mutating arrays is not supported`. I guess this is not possible in the current AD component of Flux, ie. Zygote. To work around that I added the upper triangular mask to the output `att` of the batch matrix multiplication operation, which I do using Flux functions `batched_mul` and `batched_transpose`. Note that here Flux requires the batch dimesion to be the last, as evidenced by the difference in the order of `B, T, C`. 
 
 
 <div style="width: 100%;">
