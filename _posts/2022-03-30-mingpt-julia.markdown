@@ -87,14 +87,14 @@ The meat of this component follows next. One thing that tripped me here, has bee
 <div style="clear: both;">
 </div>
 
-An interesting bit in Karpathy's code is how he had to select the parameters of the model to apply weight decay to. He carefully selects which parameters of the model will be decayed. This is shown in the lengthy function below:
+An interesting bit in Karpathy's code is how he had to select the parameters of the model to apply weight decay to. He carefully selects which parameters of the model will be decayed. The results is the following lengthy function below:
 
 <pre data-start="136" data-end="180" data-lang="python"
       data-src="https://raw.githubusercontent.com/karpathy/minGPT/master/mingpt/model.py"
       data-view="https://github.com/karpathy/minGPT/blob/master/mingpt/model.py#L136-L180"></pre>          
 
 
-In Flux one can implement the `trainable` function for this, as described in the [docs](https://fluxml.ai/Flux.jl/stable/models/advanced/#Customising-Parameter-Collection-for-a-Model). Getting inspiration from that, I added a `decayed_trainable`. So how I specify the parameters looks like this:
+In Flux one can implement the `trainable` function for this, as described in the [docs](https://fluxml.ai/Flux.jl/stable/models/advanced/#Customising-Parameter-Collection-for-a-Model). Getting inspiration from that, I added a `decayed_trainable`. In my custom optimiser code (that I adapted from the Flux's ADAM) I handle the weight decay if the parameters needs to be decayed. So how I specify the parameters looks like this:
 
 <pre data-start="80" data-end="91" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
