@@ -118,7 +118,7 @@ My model was training well at this point but it was about 10x slower than the Py
       data-src="https://raw.githubusercontent.com/chengchingwen/Transformers.jl/master/src/fix/batchedmul.jl"
       data-view="https://github.com/chengchingwen/Transformers.jl/blob/master/src/fix/batchedmul.jl#L25-L48"></pre>
 
-The `batched_gemm!` here is also hitting a CUDA version implemented in the Transformers.jl. And indeed bringing those in to my code, it started running fast. However thanks to the wonderful people at [Julia Slack](https://julialang.org/slack/), I learned all of this is already integrated to the Flux library. For example the efficient differentiation is now here in the form of `rrule` of [ChainRules.jl](https://github.com/JuliaDiff/ChainRules.jl):
+The `batched_gemm!` here is also hitting a CUDA version implemented in the Transformers.jl. And indeed bringing those in to my code, it started running fast. However, thanks to the wonderful people at [Julia Slack](https://julialang.org/slack/) (Michael Abbott, Andrew Dinhobl, Julian Samaroo), I learned all of this is already integrated to the Flux library. For example the efficient differentiation is now here in the form of `rrule` of [ChainRules.jl](https://github.com/JuliaDiff/ChainRules.jl):
 
 <pre data-start="85" data-end="99" data-lang="julia"
       data-src="https://raw.githubusercontent.com/FluxML/NNlib.jl/d8b9b41c8977b18ab4adcc2f288ffcd9c4c43c3f/src/batched/batchedmul.jl"
