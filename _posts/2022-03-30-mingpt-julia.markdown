@@ -7,17 +7,17 @@ tags:
     - julia
 ---
 
-As a learning exercise I tried to [port](https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl) Andrey Karpathy's [minGPT](https://github.com/karpathy/minGPT), which is based on Python and PyTorch to Julia and Flux. He runs the model on three distinct domains; language, vision and math. Here I concentrate on the [math problem](https://github.com/karpathy/minGPT/blob/master/play_math.ipynb), in which we are interested in seeing whether the model can learn to do addition given two numbers. What we have here is a so called seq2seq model, which means it needs to predict the next item, given a sequence of previous items. So what we want is like  a language model that predicts the next word given the sentence so far. Therefore, we begin by creating a dataset where we encode the addition problem and its result as one string. The two, two digit numbers, and the result of addition, which is three digits (with zeros in front if necessary), is encoded as a string. For example, the addition of 85 and 50 which results in 135 is encoded as the sequence [8, 5, 5, 0, 1, 3, 5]. Given 85 and 50, the model should predict 135 of course. But for the seq2seq model, this amounts to predicting [8, 5, 5, 0, 1] given [8, 5, 5, 0]. Predicting [8, 5, 5, 0, 1, 3] given [8, 5, 5, 0, 1] and finally predicting [8, 5, 5, 0, 1, 3, 5] given [8, 5, 5, 0, 1, 3].  
+As a learning exercise I tried to [port](https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl) Andrey Karpathy's [minGPT](https://github.com/karpathy/minGPT), which is based on Python and PyTorch to Julia and Flux. GPT is a language model, that is trained by the error signal of its prediction for the next element of a given sequence. Karpathy runs the model on three distinct domains; language, vision and math. Here I concentrate on the self contained [math problem](https://github.com/karpathy/minGPT/blob/master/play_math.ipynb), in which we are interested in seeing whether the model can learn to do addition given two numbers, two digit numbers. Therefore, we begin by creating a dataset where we encode the addition problem and its result as one string. The two, two digit numbers, and the result of addition, which is three digits (padded with zeros if necessary), is encoded as a string. For example, the addition of 85 and 50 which results in 135 is encoded as the sequence [8, 5, 5, 0, 1, 3, 5]. Given 85 and 50, the model should predict 135. This amounts to predicting [8, 5, 5, 0, 1] given [8, 5, 5, 0]. Predicting [8, 5, 5, 0, 1, 3] given [8, 5, 5, 0, 1] and finally predicting [8, 5, 5, 0, 1, 3, 5] given [8, 5, 5, 0, 1, 3].
 
-So our x and y looks like [8, 5, 5, 0, 1, 3] and [-100, -100, -100, 1, 3, 5]. -100 is to be ignored here, meaning its not included in the loss calculation. What this means in Julia can be understood from this part of the code:
+Hence, our input to the model will look like [8, 5, 5, 0, 1, 3]. For the ouput he considers a sequence like this [-100, -100, -100, 1, 3, 5]. The -100s are to be ignored here in the loss calculation. How this translates to Julia code can be understood from this part of the code:
 
 <pre data-start="297" data-end="330" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L320-L330"></pre>     
 
-Here of course I adapt the correspondng code to Julia, because in Julia indexing starts from 1 whereas in Python from 0, so what we see here is the labels array starting from 1 and going up to 9, plus the -99, instead of from 0 to 9, plus -100 in Python. What I am doing is here is to one hot encode the digits and also the -100 (-99 in Julia) and drop the last row (see that [1:end-1, :, :]) and then element wise multiply (the .* in the loss function). This amounts to ignoring -100 in the loss calculation.
+Note that since the Julia indexing starts from 1, our labels start from 1, and we also have the -99. What I am doing is here is to one hot encode the digits and also the -100 (-99 in Julia) and drop that -99 in the last row (see that [1:end-1, :, :]) and then element wise multiply (the .* in the loss function). This amounts to ignoring known part of the given sequence in the loss calculation.
 
-It was very straightforward to port all of the components. For example below on the left you see the Python class definition for the `CausalSelfAttention` component, and on the right is the struct definition for Julia.
+It was quite straightforward to port all of the PyTorch components to Flux. For example below on the left you see the Python class definition for the `CausalSelfAttention` component, and on the right is the struct definition for Julia.
 
 <style>
   /* .title_box {
@@ -87,21 +87,21 @@ The meat of this component follows next. One thing that tripped me here, has bee
 <div style="clear: both;">
 </div>
 
-An interesting bit in Karpathy's code is how he had to select the parameters of the model to apply weight decay to. He carefully selects which parameters of the model will be decayed. The results is the following lengthy function below:
+An interesting bit in Karpathy's code is how he had to select the parameters of the model to apply weight decay to. He selects which parameters of the model will be decayed in following lengthy function below:
 
 <pre data-start="136" data-end="180" data-lang="python"
       data-src="https://raw.githubusercontent.com/karpathy/minGPT/master/mingpt/model.py"
       data-view="https://github.com/karpathy/minGPT/blob/master/mingpt/model.py#L136-L180"></pre>          
 
 
-In Flux one can implement the `trainable` function for this, as described in the [docs](https://fluxml.ai/Flux.jl/stable/models/advanced/#Customising-Parameter-Collection-for-a-Model). Getting inspiration from that, I added a `decayed_trainable`. In my custom optimiser code (that I adapted from the Flux's ADAM) I handle the weight decay if the parameters needs to be decayed. So how I specify the parameters looks like this:
+In Flux one can implement the `trainable` function for this, as described in the [docs](https://fluxml.ai/Flux.jl/stable/models/advanced/#Customising-Parameter-Collection-for-a-Model). Getting inspiration from that, I added a `decayed_trainable`. In my custom optimiser code (that I adapted from the Flux's ADAM) I handle the weight decay if the parameters needs to be decayed. Hence this is how I specify the parameters:
 
 <pre data-start="80" data-end="91" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L80-L91"></pre>          
 
 
-Flux docs mention the weight decayed version of ADAM, the `ADAMW`. But as far as I understand, this is not quite what Karpathy and Pytorch's ADAMW works here, so I grabbed the code of basic ADAM and added the bag of tricks used in deep learning, like norm clipping the gradients and decoupled weight decay of selected parameters. To be precise I tried to implement the algorithm in the [paper](https://arxiv.org/pdf/1711.05101.pdf), with these bells and whistles.
+Flux docs mention the weight decayed version of ADAM, the `ADAMW`. But as far as I understand, this is not quite how Karpathy and Pytorch's ADAMW works, so I grabbed the code of basic ADAM and added the bag of tricks used in deep learning, like norm clipping the gradients and decoupled weight decay of selected parameters. To be precise I tried to implement the algorithm in the [paper](https://arxiv.org/pdf/1711.05101.pdf), with these bells and whistles.
 
 ![ADAMW](/assets/static/adamw.png)
 
@@ -112,7 +112,7 @@ Hence our optimiser looks like this:
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L255-L295"></pre>          
 
 
-For training, we need a loss function and its gradient, computed on batches of data. So we get the ouput from the model, apply our cross entropy / softmax loss function via the `Zygote.pullback`, and hit to the optimiser with its output via `Flux.Optimise.update!` as shown:
+For training, we need a loss function and its gradient, computed on batches of data. So we get the ouput from the model, apply our cross entropy / softmax loss function via the `Zygote.pullback` to get both of these in one shot, and then hit to the optimiser `Flux.Optimise.update!` with it as shown:
 
 <pre data-start="297" data-end="301" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
@@ -123,19 +123,19 @@ For training, we need a loss function and its gradient, computed on batches of d
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L336-L340"></pre>          
 
   
-My model was training well at this point, but it was about 10x slower than the Python version on the GPU. Having no idea what could possible make it run so slowly, I found about [Transformer.jl](https://github.com/chengchingwen/Transformers.jl), a Julia library for Transformers. In this library, we see a custom implementation of the batched matrix multiplication AND how to efficiently differentiate it:
+My model was training well at this point, but it was about 10x slower than the Python version on the GPU. Having no idea what could possible make it run so slowly, I googled for Transformers in Julia and of course found about [Transformer.jl](https://github.com/chengchingwen/Transformers.jl), a Julia library for Transformers. In this library, we see a custom implementation of the batched matrix multiplication AND how to efficiently differentiate it:
 
 <pre data-start="25" data-end="48" data-lang="julia"
       data-src="https://raw.githubusercontent.com/chengchingwen/Transformers.jl/master/src/fix/batchedmul.jl"
       data-view="https://github.com/chengchingwen/Transformers.jl/blob/master/src/fix/batchedmul.jl#L25-L48"></pre>
 
-The `batched_gemm!` of the Transformers.jl lib here is also hitting a CUDA version implemented in the Transformers.jl. And indeed, bringing those in to my code, it started running fast. However, thanks to the wonderful people at [Julia Slack](https://julialang.org/slack/) (Michael Abbott, Andrew Dinhobl, Julian Samaroo), I learned that all of this is already integrated into the Flux library. For example, the efficient differentiation is now here in the form of a `rrule` of [ChainRules.jl](https://github.com/JuliaDiff/ChainRules.jl):
+The `batched_gemm!` of the Transformers.jl lib shown above here is also hitting a CUDA version implemented in the Transformers.jl. And indeed, bringing those in to my code, it started running as fast as Python. However, thanks to the wonderful people at [Julia Slack](https://julialang.org/slack/), I learned that all of this is already integrated into the Flux library. Hence no need to grab code from Transformers. Yay!.. For example, the efficient differentiation is now here in the form of a `rrule` of [ChainRules.jl](https://github.com/JuliaDiff/ChainRules.jl). 
 
 <pre data-start="85" data-end="99" data-lang="julia"
       data-src="https://raw.githubusercontent.com/FluxML/NNlib.jl/d8b9b41c8977b18ab4adcc2f288ffcd9c4c43c3f/src/batched/batchedmul.jl"
       data-view="https://github.com/FluxML/NNlib.jl/blob/d8b9b41c8977b18ab4adcc2f288ffcd9c4c43c3f/src/batched/batchedmul.jl#L85#L85-L99"></pre>
 
-It turns out that what made my code run extremely slowly was NOT casting the output of the `sqrt` below to `Float32`. The function `sqrt` outputs here a `Float64` and makes the whole chain afterwards very inefficient. So, number one thing to look out for when tracking down inefficiencies is making sure you are using the correct types.
+It turned out that what made my code run extremely slowly was NOT casting the output of the `sqrt` below to `Float32`. The function `sqrt` outputs here a `Float64` and makes the whole chain afterwards very inefficient. So, number one thing to look out for when tracking down inefficiencies in Julia is making sure you are using the correct types.
 
 <pre data-start="56" data-end="60" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
