@@ -93,7 +93,7 @@ The meat of this component follows next. One thing that tripped me here, has bee
 
 # Weight Decay and Optimiser
 
-An interesting bit in Karpathy's code is how he had to select the parameters of the model to apply weight decay to. He selects which parameters of the model will be decayed in the following lengthy function below:
+An interesting bit in Karpathy's code is how he had to select the parameters of the model to apply weight decay to. The following lengthy function below is doing that:
 
 <pre data-start="136" data-end="180" data-lang="python"
       data-src="https://raw.githubusercontent.com/karpathy/minGPT/master/mingpt/model.py"
