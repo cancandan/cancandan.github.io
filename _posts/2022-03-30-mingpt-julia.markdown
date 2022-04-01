@@ -7,6 +7,8 @@ tags:
     - julia
 ---
 
+# Introduction
+
 As a learning exercise I tried to [port](https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl) Andrey Karpathy's [minGPT](https://github.com/karpathy/minGPT), which is based on Python and PyTorch to Julia and Flux. GPT is a language model, that is trained by the error signal of its prediction for the next element of a given sequence. Karpathy runs the model on three problems that fits this formatm but each in a distinct domain; language, vision and math. Here I concentrate on the self contained [math problem](https://github.com/karpathy/minGPT/blob/master/play_math.ipynb), in which we are interested in seeing whether the model can learn to do addition given two, two digit numbers. Therefore, we begin by creating a dataset where we encode the addition problem and its result as one string. The two, two digit numbers, and the result of addition, which is three digits (both inputs and the result padded with zeros if necessary), is encoded as a string. For example, the addition of 85 and 50 which results in 135 is encoded as the sequence [8, 5, 5, 0, 1, 3, 5]. Given 85 and 50, the model should predict 135. This amounts to predicting [8, 5, 5, 0, 1] given [8, 5, 5, 0]. Predicting [8, 5, 5, 0, 1, 3] given [8, 5, 5, 0, 1] and finally predicting [8, 5, 5, 0, 1, 3, 5] given [8, 5, 5, 0, 1, 3].
 
 Hence, our input to the model will look like [8, 5, 5, 0, 1, 3]. For the ouput he considers a sequence like this [-100, -100, -100, 1, 3, 5]. The -100s are to be ignored here in the loss calculation. How this translates to Julia code can be understood from this part of the code:
@@ -16,6 +18,8 @@ Hence, our input to the model will look like [8, 5, 5, 0, 1, 3]. For the ouput h
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L320-L330"></pre>     
 
 Note that since the Julia indexing starts from 1, our labels start from 1, and we also have the -99. What I am doing is here is to one hot encode the digits and also the -100 (-99 in Julia) and drop that -99 in the last row (see that [1:end-1, :, :]) and then element wise multiply (the .* in the loss function). This amounts to ignoring known part of the given sequence in the loss calculation.
+
+# Components
 
 It was quite straightforward to port all of the PyTorch components to Flux. For example below on the left you see the Python class definition for the `CausalSelfAttention` component, and on the right is the struct definition for Julia.
 
@@ -87,6 +91,8 @@ The meat of this component follows next. One thing that tripped me here, has bee
 <div style="clear: both;">
 </div>
 
+# Weight Decay and Optimiser
+
 An interesting bit in Karpathy's code is how he had to select the parameters of the model to apply weight decay to. He selects which parameters of the model will be decayed in following lengthy function below:
 
 <pre data-start="136" data-end="180" data-lang="python"
@@ -111,6 +117,7 @@ Hence our optimiser looks like this:
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L255-L295"></pre>          
 
+# Loss and Gradient Calculation
 
 For training, we need a loss function and its gradient, computed on batches of data. So we get the ouput from the model, apply our cross entropy / softmax loss function via the `Zygote.pullback` to get both of these in one shot, and then hit to the optimiser `Flux.Optimise.update!` with it as shown:
 
@@ -122,7 +129,8 @@ For training, we need a loss function and its gradient, computed on batches of d
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L336-L340"></pre>          
 
-  
+# Making it Fast
+
 My model was training well at this point, but it was about 10x slower than the Python version on the GPU. Having no idea what could possible make it run so slowly, I googled for Transformers in Julia and of course found about [Transformer.jl](https://github.com/chengchingwen/Transformers.jl), a Julia library for Transformers. In this library, we see a custom implementation of the batched matrix multiplication AND how to efficiently differentiate it:
 
 <pre data-start="25" data-end="48" data-lang="julia"
@@ -141,6 +149,7 @@ It turned out that what made my code run extremely slowly was NOT casting the ou
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L56-L60"></pre>          
 
+# Try it yourself
 
 If you want to try this out yourself, [this notebook](https://github.com/cancandan/mingpt-julia/blob/main/run.ipynb) shows what needs to be done, which I copy below for reference:
 
