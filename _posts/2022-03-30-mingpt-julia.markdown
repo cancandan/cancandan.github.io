@@ -60,9 +60,9 @@ img {
   </div>
   <div class="title_box" style="margin-left: 51%;"> 
     <div id="title">Julia</div>      
-      <pre data-start="14" data-end="33" data-lang="julia"
+      <pre data-start="14" data-end="36" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
-      data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L14-L33"></pre>      
+      data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L14-L36"></pre>      
     </div>
 </div>
 
