@@ -25,7 +25,7 @@ Note that since the Julia indexing starts from 1, our labels start from 1, and w
 
 ## Components ##
 
-It was quite straightforward to port all of the PyTorch components to Flux. For example below on the left you see the Python class definition for the `CausalSelfAttention` component, and on the right is the struct definition for Julia.
+It was quite straightforward to port all of the PyTorch components to Flux. For example below on the left you see the Python class definition for the `CausalSelfAttention` component, and on the right is how to define it in Julia.
 
 <style>
   /* .title_box {
