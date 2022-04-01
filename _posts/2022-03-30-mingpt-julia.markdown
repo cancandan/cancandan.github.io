@@ -135,7 +135,7 @@ For training, we need a loss function and its gradient, computed on batches of d
 
 # Making it Fast
 
-My model was training well at this point, but it was like 10x slower than the Python version, on the GPU. Having no idea what could possible make it run so slowly, I googled for Transformers in Julia and of course found about [Transformers.jl](https://github.com/chengchingwen/Transformers.jl), a Julia library for Transformers. In this library, we see a custom implementation of the batched matrix multiplication AND how to efficiently differentiate it:
+My model was training well at this point, but it was like 10x slower than the Python version, on the GPU. Having no idea what could possible make it run so slowly, I googled for Transformers in Julia, and of course found about [Transformers.jl](https://github.com/chengchingwen/Transformers.jl), a Julia library for Transformers. In this library, we see a custom implementation of the batched matrix multiplication AND how to efficiently differentiate it:
 
 <pre data-start="25" data-end="48" data-lang="julia"
       data-src="https://raw.githubusercontent.com/chengchingwen/Transformers.jl/master/src/fix/batchedmul.jl"
