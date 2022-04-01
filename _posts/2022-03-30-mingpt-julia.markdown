@@ -7,7 +7,11 @@ tags:
     - julia
 ---
 
-# Introduction
+
+- TOC
+{:toc}
+
+## Introduction 
 
 As a learning exercise, I tried to [port](https://github.com/cancandan/mingpt-julia/) Andrey Karpathy's awesome [minGPT](https://github.com/karpathy/minGPT), which is based on Python and PyTorch to Julia and Flux. GPT is a language model, that is trained by the error signal of its prediction for the next element of a given sequence. Karpathy runs the model on three different problems, each in a distinct domain, but fitting this format; language, vision and math. Here I concentrate on the self contained [math problem](https://github.com/karpathy/minGPT/blob/master/play_math.ipynb), in which we are interested in seeing whether the model can learn to do addition given two, two digit numbers. Therefore, we begin by creating a dataset where we encode the addition problem and its result as one string. The two, two digit numbers, and the result of addition, which is three digits (both inputs and the result padded with zeros if necessary), is encoded as a string. For example, the addition of 85 and 50 which results in 135 is encoded as the sequence [8, 5, 5, 0, 1, 3, 5]. Given 85 and 50, the model should predict 135. This amounts to predicting [8, 5, 5, 0, 1] given [8, 5, 5, 0]. Predicting [8, 5, 5, 0, 1, 3] given [8, 5, 5, 0, 1] and finally predicting [8, 5, 5, 0, 1, 3, 5] given [8, 5, 5, 0, 1, 3].
 
@@ -19,7 +23,7 @@ Hence, our input to the model will look like [8, 5, 5, 0, 1, 3]. For the ouput h
 
 Note that since the Julia indexing starts from 1, our labels start from 1, and we also have the -99. What I am doing is here is to one hot encode the digits and also the -100 (-99 in Julia) and drop that -99 in the last row (see that [1:end-1, :, :]) and then element wise multiply (the .* in the loss function). This amounts to ignoring known part of the given sequence in the loss calculation.
 
-# Components
+## Components ##
 
 It was quite straightforward to port all of the PyTorch components to Flux. For example below on the left you see the Python class definition for the `CausalSelfAttention` component, and on the right is the struct definition for Julia.
 
