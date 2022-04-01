@@ -147,7 +147,7 @@ The `batched_gemm!` of the Transformers.jl lib shown above here is also hitting 
       data-src="https://raw.githubusercontent.com/FluxML/NNlib.jl/d8b9b41c8977b18ab4adcc2f288ffcd9c4c43c3f/src/batched/batchedmul.jl"
       data-view="https://github.com/FluxML/NNlib.jl/blob/d8b9b41c8977b18ab4adcc2f288ffcd9c4c43c3f/src/batched/batchedmul.jl#L85#L85-L99"></pre>
 
-It turned out that, what made my code run extremely slowly was.. (wait for it).. NOT casting the output of the `sqrt` below to `Float32`. The function `sqrt` outputs here a `Float64` and makes the whole chain afterwards very inefficient. So, number one thing to look out for when tracking down inefficiencies in Julia is making sure you are using the correct types.
+It turned out that, what made my code run extremely slowly was.. (wait for it).. NOT casting the output of the `sqrt` below to `Float32`. The function `sqrt` outputs here a `Float64` and makes the whole chain afterwards VERY inefficient. So, number one thing to look out for when tracking down inefficiencies in Julia is making sure you are using the correct types.
 
 <pre data-start="56" data-end="60" data-lang="julia"
       data-src="https://raw.githubusercontent.com/cancandan/mingpt-julia/main/mingpt.jl"
