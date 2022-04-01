@@ -111,7 +111,7 @@ In Flux one can implement the `trainable` function for this, as described in the
       data-view="https://github.com/cancandan/mingpt-julia/blob/main/mingpt.jl#L80-L91"></pre>          
 
 
-Flux docs mention the weight decayed version of ADAM, the [`ADAMW`](https://fluxml.ai/Flux.jl/stable/training/optimisers/#Flux.Optimise.ADAMW). But as far as I understand, this is not quite how Pytorch's [`ADAMW`](https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html) works, so I grabbed the code of basic ADAM and added the bag of tricks Karpathy used in his code, like norm clipping the gradients and decoupled weight decay of selected parameters. To be precise I tried to implement the algorithm in the [paper](https://arxiv.org/pdf/1711.05101.pdf), with these bells and whistles.
+Flux docs mention the weight decayed version of ADAM, the [`ADAMW`](https://fluxml.ai/Flux.jl/stable/training/optimisers/#Flux.Optimise.ADAMW). But as far as I understand, this is not quite how Pytorch's [`ADAMW`](https://pytorch.org/docs/stable/generated/torch.optim.AdamW.html) works, so I grabbed the code of basic ADAM and added the bag of tricks Karpathy used in his code, like norm clipping the gradients and decoupled weight decay of selected parameters. To be precise I tried to implement the algorithm in the [paper](https://arxiv.org/pdf/1711.05101.pdf) shown below, with these added bells and whistles.
 
 ![ADAMW](/assets/static/adamw.png)
 
