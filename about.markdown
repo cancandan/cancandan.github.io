@@ -4,4 +4,6 @@ title: About
 permalink: /about/
 ---
 
+![Himself](/assets/static/pgpe.gif)
+
 I am a freelance developer interested in machine learning and Julia. Here is my [linkedin](https://www.linkedin.com/in/cancandan/).
