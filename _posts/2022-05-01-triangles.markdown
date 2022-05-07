@@ -94,7 +94,7 @@ I see `428.101 ms (3157 allocations: 205.09 MiB)`.
 ## The cross product method
 
 
-Now the cool part. Move your mouse inside and outside of the triangle below. You will see a bar chart, depicting the magnitude and direction of the 3rd components of the cross products, AB with AP (reds), BC with BP (greens) and CA with CP (blues). Observe that all those bars point the same direction only inside the triangle!
+Now the cool part. Move your mouse inside and outside of the triangle below. You will see a bar chart, depicting the magnitude and direction of the 3rd components of the cross products, AB with AP (reds), BC with BP (greens) and CA with CP (blues). Observe that all those bars point to the same direction ONLY inside the triangle!
 
 <div id='container' style="text-align: center;"></div>
 
