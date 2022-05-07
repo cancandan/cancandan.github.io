@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Triangle frenzy"
-date:   2022-05-01 16:58:45 +0300
+date:   2022-05-07 17:29:00 +0300
 categories: julia graphics cuda 
 tags:
     - julia
