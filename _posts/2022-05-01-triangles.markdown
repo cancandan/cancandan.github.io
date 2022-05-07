@@ -8,7 +8,7 @@ tags:
 ---
 
 
-Suppose we want to draw a batch of images, where each image is made up of randomly positioned and colored triangles, blending, so it will look like this:
+Suppose we want to draw a batch of images, where each image is made up of randomly positioned and colored triangles, that are blending. It will look like this:
 
 ![triangles](/assets/static/avnicompare.png){: .center-image}
 
