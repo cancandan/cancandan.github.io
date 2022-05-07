@@ -103,7 +103,9 @@ Now the cool part. Move your mouse inside and outside of the triangle below. You
 let sketch = function(p) {
 
 p.setup = function(){
-    p.createCanvas(400, 400);
+    c = p.createCanvas(400, 400);
+    c.style("touch-action", "none");
+    // c.style.touchAction="none";
     p.background(1);
 };
 
