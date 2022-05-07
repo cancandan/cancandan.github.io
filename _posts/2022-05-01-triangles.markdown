@@ -197,6 +197,8 @@ Whats great about this is that cross products are just multiplications and subtr
 What needs to be done is clear, for each of the M images, for each of the N triangles, our operation is to update a pixel color to blend with the current triangles color if that pixel is inside the triangle. We will parallelize this operation with a CUDA kernel, shown below:
 
 {% highlight julia %}
+using CUDA
+
 function puttri(prms, imgs, tri, ins)    
     idx = (blockIdx().x - 1) * blockDim().x + threadIdx().x  
     idy = (blockIdx().y - 1) * blockDim().y + threadIdx().y
