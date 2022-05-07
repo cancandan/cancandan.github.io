@@ -197,7 +197,7 @@ new p5(sketch, 'container');
 
 Whats great about this is that cross products are just multiplications and subtractions, perfect job to parallelize with a GPU.
 
-So, what needs to be done is clear, for each of the M images, and for each of the N triangles, our operation is to update a pixel color to blend with the current triangle's color, if that pixel is inside the triangle. We will parallelize this operation with a CUDA kernel, shown below:
+So, what needs to be done is clear. For each of the M images, and for each of the N triangles, our operation is to update a pixel color to blend with the current triangle's color, if that pixel is inside the triangle. We will parallelize this operation with a CUDA kernel, shown below:
 
 {% highlight julia %}
 using CUDA
