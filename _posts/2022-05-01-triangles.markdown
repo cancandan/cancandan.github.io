@@ -252,6 +252,6 @@ end
 
 Benchmarking this I see `120.315 ms (38689 allocations: 52.53 MiB)`
 
-Awesome, that's about 4x speedup. Note that I benchmarked with `--check-bounds=no`, which is a startup option that you pass when launching julia that disables the bounds checking. In the next post, I will talk about the very cool PGPE algorithm used in evojax to steer these images towards a target image. You can see one example of this [here](https://cancandan.github.io/about/).
+Awesome, that's about 4x speedup. Note that I benchmarked with `--check-bounds=no`, which is a startup option that you pass when launching julia that disables the bounds checking. In the next post, I will talk about the very cool [PGPE](https://people.idsia.ch/~juergen/icann2008sehnke.pdf) algorithm used in [evojax](https://github.com/google/evojax) to steer these images towards a target image. You can see one example of this [here](https://cancandan.github.io/about/).
 
 I am pretty new to Julia, please let me know if you have any comments, suggestions. 
