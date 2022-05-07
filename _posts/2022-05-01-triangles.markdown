@@ -12,7 +12,9 @@ Suppose we want to draw a batch of images, where each image is made up of random
 
 ![triangles](/assets/static/avnicompare.png){: .center-image}
 
-and then find the euclidean distance of each such image to a given target image. Why on earth am I doing this? Well this turns into an interesting optimization problem of finding the closest triangle image and also an excuse to practise Julia. The inspiration is from [this repo](https://github.com/google/brain-tokyo-workshop/tree/master/es-clip).
+and then find the euclidean distance of each such image to a given target image. 
+
+Now why on earth am I doing this? Well, this turns into an interesting optimization problem of finding the closest triangle image and also an excuse to practise Julia. The inspiration is from the [this repo](https://github.com/google/brain-tokyo-workshop/tree/master/es-clip) based on [EvoJax](https://github.com/google/evojax).
 
 Towards framing this as an optimization problem, we will represent a triangle as a vector of size 10, made up of floating point numbers between 0 and 1. Four numbers of this vector are for the color of the triangle; r,g,b and alpha, and for the three vertices of the triangle we need 6 numbers, (x1,y1), (x2,y2), (x3,y3). Hence, if we want to draw M images, each image having N triangles, we need a matrix of size (10,N,M), which will be our parameters matrix. I want to randomly create such a matrix and [min-max scale](https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_\(min-max_normalization\)) it along the triangle dimension, by which I mean, for each image, I first find the minimum and maximum of a triangle parameter among the N triangles, and then subtract from the parameter this minimum and then divide the result by the difference between the maximum and the minimum. I want to end up with an array of size (3,w,h,M) for the images, where w is width and h is height, and an array of size M for the distances. Let's see how fast we can do this.
 
@@ -41,7 +43,7 @@ end
 {% endhighlight %}
 
 
-The first thing that comes to mind is to use a 2d graphics library for drawing, and since the [Cairo lib](https://github.com/JuliaGraphics/Cairo.jl) is available, let's try that, the function below is drawing the triangles on a blank white Cairo canvas, and copying it to the img array at the end:
+The first thing that comes to mind is to use a 2d graphics library for drawing, and since the [Cairo lib](https://github.com/JuliaGraphics/Cairo.jl) is available, let's try that. The function below is drawing the triangles on a blank white Cairo canvas, and copying it to the img array at the end:
 
 {% highlight julia %}
 @views function renderCairo(img, prms, num_triangles, w, h)                  
@@ -92,7 +94,7 @@ I see `428.101 ms (3157 allocations: 205.09 MiB)`.
 ## The cross product method
 
 
-Now something really cool. Move your mouse inside and outside of the triangle below, you will see a bar chart depicting the magnitude and direction of the 3rd components of the cross products of vectors AB with AP (reds), BC with BP (greens) and CA with CP (blues). Observe that all those bars point the same direction only inside the triangle!
+Now the cool part. Move your mouse inside and outside of the triangle below. You will see a bar chart depicting the magnitude and direction of the 3rd components of the cross products of vectors AB with AP (reds), BC with BP (greens) and CA with CP (blues). Observe that all those bars point the same direction only inside the triangle!
 
 <div id='container' style="text-align: center;"></div>
 
@@ -127,7 +129,7 @@ p.drawArrow = function(base, vec, myColor) {
 
 p.draw = function() {
         p.background(220);
-        [x1,y1,x2,y2,x3,y3]=[30, 375, 58, 20, 386, 75];
+        [x1,y1,x2,y2,x3,y3]=[60, 330, 70, 50, 360, 75];
         // triangle(x1,y1,x2,y2,x3,y3);  
         r = p.color(255, 0, 0)
         g = p.color(0, 255, 0)
@@ -254,4 +256,4 @@ Benchmarking this I see `120.315 ms (38689 allocations: 52.53 MiB)`
 
 That's about 4x speedup, not really impressive, but perhaps not too bad considering I have an old GPU. Note that I benchmarked with `--check-bounds=no`, which is a startup option that you pass when launching julia that disables the bounds checking. In the next post, I will talk about the very cool [PGPE](https://people.idsia.ch/~juergen/icann2008sehnke.pdf) algorithm used in [evojax](https://github.com/google/evojax) to steer these images towards a target image. You can see one example of this [here](https://cancandan.github.io/about/).
 
-Let me know if you have any comments, suggestions, improvements. 
+Please let me know if you have any comments, suggestions, improvements. 
