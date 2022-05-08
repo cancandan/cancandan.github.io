@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Triangle frenzy"
+title:  "Some CUDA programming fun in Julia"
 date:   2022-05-07 17:29:00 +0300
 categories: julia graphics cuda 
 tags:
