@@ -42,6 +42,7 @@ function prepare()
 end
 {% endhighlight %}
 
+## With a 2d library
 
 The first thing that comes to mind is to use a 2d graphics library for drawing, and since the [Cairo lib](https://github.com/JuliaGraphics/Cairo.jl) is available, let's try that. The function below is drawing the triangles on a blank white Cairo canvas, and copying it to the img array at the end:
 
